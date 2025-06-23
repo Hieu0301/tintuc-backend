@@ -18,11 +18,6 @@ COPY . .
 # Cài package
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Generate app key + migrate
-RUN php artisan config:clear \
-    && php artisan key:generate \
-    && php artisan migrate --force || true
-
 # Quyền cho Apache
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
@@ -30,6 +25,8 @@ RUN chown -R www-data:www-data /var/www/html \
 # Mở port
 EXPOSE 80
 
-# Apache run
-CMD ["sh", "-c", "php artisan migrate --force && apache2-foreground"]
-
+# Apache run và migrate sau khi service sẵn sàng
+CMD php artisan config:clear \
+    && php artisan key:generate \
+    && php artisan migrate --force \
+    && apache2-foreground
