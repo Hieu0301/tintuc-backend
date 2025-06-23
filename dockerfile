@@ -1,34 +1,36 @@
 FROM php:8.2-apache
 
-# Cài extension
+# Cài các extension PHP cần thiết
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip \
-    libpng-dev libonig-dev libxml2-dev libzip-dev \
+    git curl zip unzip libpng-dev libonig-dev libxml2-dev libzip-dev \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
-# Cài Composer
+# Bật mod_rewrite cho Apache (Laravel yêu cầu)
+RUN a2enmod rewrite
+
+# Cài Composer (lấy từ image composer chính thức)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Đặt thư mục làm việc
+# Thiết lập thư mục làm việc
 WORKDIR /var/www/html
 
-# Copy source Laravel vào container
+# Copy toàn bộ source Laravel vào container
 COPY . .
 
-# ⚠️ Quan trọng: Apache serve thư mục /public
+# ⚠️ Đặt DocumentRoot về public (Laravel dùng thư mục public làm entry point)
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-# Chmod quyền
+# Đảm bảo quyền đúng để Apache có thể đọc
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Cài package
+# Cài đặt PHP packages bằng Composer
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Mở port
+# Mở port HTTP
 EXPOSE 80
 
-# Run migrate sau khi container chạy xong
+# Chạy các lệnh Laravel khi container khởi động
 CMD php artisan config:clear \
     && php artisan key:generate \
     && php artisan migrate --force \
