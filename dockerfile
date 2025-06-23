@@ -18,6 +18,9 @@ COPY . .
 # Cài package
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
+# Sửa DocumentRoot thành thư mục public của Laravel
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
+
 # Quyền cho Apache
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
