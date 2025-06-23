@@ -8,7 +8,11 @@ RUN apt-get update && apt-get install -y \
 # Bật mod_rewrite cho Apache (Laravel yêu cầu)
 RUN a2enmod rewrite
 
-# Cài Composer (lấy từ image composer chính thức)
+# ⚠️ Sửa VirtualHost để cho phép .htaccess hoạt động
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf \
+    && echo '<Directory "/var/www/html/public">\n\tAllowOverride All\n</Directory>' >> /etc/apache2/apache2.conf
+
+# Cài Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Thiết lập thư mục làm việc
@@ -17,20 +21,17 @@ WORKDIR /var/www/html
 # Copy toàn bộ source Laravel vào container
 COPY . .
 
-# ⚠️ Đặt DocumentRoot về public (Laravel dùng thư mục public làm entry point)
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
-
-# Đảm bảo quyền đúng để Apache có thể đọc
+# Cấp quyền cho Apache
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Cài đặt PHP packages bằng Composer
+# Cài đặt PHP packages
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Mở port HTTP
 EXPOSE 80
 
-# Chạy các lệnh Laravel khi container khởi động
+# Chạy Laravel & Apache khi container khởi động
 CMD php artisan config:clear \
     && php artisan key:generate \
     && php artisan migrate --force \
