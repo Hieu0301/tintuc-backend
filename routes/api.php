@@ -24,6 +24,7 @@ Route::get('/test-mail', function () {
 
 
 Route::post('/subscribe', [NewsletterController::class, 'subscribe']);
+
 Route::get('/ping', function () {
-    return response()->json(['message' => 'pong'], 200);
+    return response()->json(['pong' => true]);
 });
