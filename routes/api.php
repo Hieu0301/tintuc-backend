@@ -25,5 +25,6 @@ Route::get('/test-mail', function () {
 
 Route::post('/subscribe', [NewsletterController::class, 'subscribe']);
 
-
-Route::get('/test', fn() => 'Laravel OK');
+Route::get('/test', function () {
+    return response('Laravel is OK', 200);
+});
