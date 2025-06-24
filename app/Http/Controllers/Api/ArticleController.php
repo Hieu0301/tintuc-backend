@@ -90,15 +90,11 @@ class ArticleController extends Controller
                 $data['thumbnail'] = $uploadedFileUrl;
             }
 
-            // ✅ Dừng lại tại đây để xem rõ dữ liệu
-            dd($data);
-
-            $article = Article::create($data);
-
+            // ✅ Trả dữ liệu về frontend để xem cho chắc
             return response()->json([
                 'success' => true,
-                'data' => $article,
-                'message' => 'Add article successful'
+                'data' => $data,
+                'message' => 'DEBUG: Dữ liệu sau validate + cloudinary'
             ]);
         } catch (Exception $e) {
             return response()->json([
