@@ -40,6 +40,14 @@ Route::get('/run-key', function () {
 // });
 
 
+Route::get('/clear-config', function () {
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('config:cache');
+    return 'Config cleared!';
+});
+
+
 Route::get('/ping', function () {
     return response()->json(['message' => 'pong']);
 });
