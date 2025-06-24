@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Exception;
 
 class ArticleController extends Controller
 {
@@ -74,12 +75,15 @@ class ArticleController extends Controller
     //     ]);
     // }
 
+
+
     public function store(ArticaleRequest $request)
     {
         try {
             $data = $request->validated();
 
             if ($request->hasFile('thumbnail')) {
+                // ✅ Sửa getRealPath() thành getPathname() để tránh lỗi trả về false
                 $uploadedFileUrl = Cloudinary::upload($request->file('thumbnail')->getPathname())->getSecurePath();
                 $data['thumbnail'] = $uploadedFileUrl;
             }
@@ -89,16 +93,17 @@ class ArticleController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $article,
-                'message' => 'Add article successfull'
+                'message' => 'Add article successful'
             ]);
-        } catch (\Exception $e) {
-            Log::error('Error when storing article: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('🔥 Lỗi khi đăng bài: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Server Error: ' . $e->getMessage()
+                'message' => 'Server error: ' . $e->getMessage()
             ], 500);
         }
     }
+
 
 
     /**
