@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticaleRequest;
 use App\Mail\NewArticleNotification;
@@ -55,24 +56,50 @@ class ArticleController extends Controller
     //     ]);
     // }
 
+    // public function store(ArticaleRequest $request)
+    // {
+    //     $data = $request->validated();
+
+    //     if ($request->hasFile('thumbnail')) {
+    //         $uploadedFileUrl = Cloudinary::upload($request->file('thumbnail')->getRealPath())->getSecurePath();
+    //         $data['thumbnail'] = $uploadedFileUrl;
+    //     }
+
+    //     $article = Article::create($data);
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $article,
+    //         'message' => 'Add article successfull'
+    //     ]);
+    // }
+
     public function store(ArticaleRequest $request)
     {
-        // $data = $request->validated();
+        try {
+            $data = $request->validated();
 
-        // if ($request->hasFile('thumbnail')) {
-        //     $uploadedFileUrl = Cloudinary::upload($request->file('thumbnail')->getRealPath())->getSecurePath();
-        //     $data['thumbnail'] = $uploadedFileUrl;
-        // }
+            if ($request->hasFile('thumbnail')) {
+                $uploadedFileUrl = Cloudinary::upload($request->file('thumbnail')->getPathname())->getSecurePath();
+                $data['thumbnail'] = $uploadedFileUrl;
+            }
 
-        // $article = Article::create($data);
+            $article = Article::create($data);
 
-        // return response()->json([
-        //     'success' => true,
-        //     'data' => $article,
-        //     'message' => 'Add article successfull'
-        // ]);
-        dd('Hàm store hoạt động');
+            return response()->json([
+                'success' => true,
+                'data' => $article,
+                'message' => 'Add article successfull'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error when storing article: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Server Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
+
 
     /**
      * Display the specified resource.
