@@ -82,11 +82,14 @@ class ArticleController extends Controller
         try {
             $data = $request->validated();
 
-            if ($request->hasFile('thumbnail')) {
-                // ✅ Sửa getRealPath() thành getPathname() để tránh lỗi trả về false
-                $uploadedFileUrl = Cloudinary::upload($request->file('thumbnail')->getPathname())->getSecurePath();
+            if ($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()) {
+                $uploadedFileUrl = Cloudinary::upload(
+                    $request->file('thumbnail')->getPathname()
+                )->getSecurePath();
+
                 $data['thumbnail'] = $uploadedFileUrl;
             }
+
 
             $article = Article::create($data);
 
