@@ -28,3 +28,13 @@ Route::post('/subscribe', [NewsletterController::class, 'subscribe']);
 Route::get('/test', function () {
     return response('Laravel is OK', 200);
 });
+
+Route::get('/run-key', function () {
+    Artisan::call('key:generate');
+    return response()->json(['message' => 'APP_KEY generated!']);
+});
+
+Route::get('/run-migrate', function () {
+    Artisan::call('migrate', ['--force' => true]);
+    return response()->json(['message' => 'Migration done!']);
+});
