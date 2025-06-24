@@ -21,7 +21,7 @@ class ArticaleRequest extends FormRequest
      */
     public function rules(): array
     {
-        $id = $this->route('categories');
+        // $id = $this->route('categories');
         $isUpdate = $this->isMethod('put') || $this->isMethod('patch');
         if ($isUpdate) {
             return [
