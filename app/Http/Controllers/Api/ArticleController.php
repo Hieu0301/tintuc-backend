@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class ArticleController extends Controller
 {
@@ -31,21 +32,43 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ArticaleRequest $request)
-    {
-        $data = $request->validated();
-        if ($request->hasFile('thumbnail')) {
-            $file = $request->file('thumbnail');
-            $fileName = time() . '-' . $file->getClientOriginalName();
+    // public function store(ArticaleRequest $request)
+    // {
+    //     $data = $request->validated();
+    //     if ($request->hasFile('thumbnail')) {
+    //         $file = $request->file('thumbnail');
+    //         $fileName = time() . '-' . $file->getClientOriginalName();
 
-            $path = $file->storeAs('images', $fileName, 'public');
-            $data['thumbnail'] = $path;
+    //         $path = $file->storeAs('images', $fileName, 'public');
+    //         $data['thumbnail'] = $path;
+    //     }
+
+    //     $article = Article::create($data);
+
+    //     // ✅ Gửi thông báo tới tất cả subscriber
+    //     $this->sendNotificationToSubscribers($article);
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $article,
+    //         'message' => 'Add article successfull'
+    //     ]);
+    // }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required',
+            'thumbnail' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('thumbnail')) {
+            $uploadedFileUrl = Cloudinary::upload($request->file('thumbnail')->getRealPath())->getSecurePath();
+            $data['thumbnail'] = $uploadedFileUrl;
         }
 
         $article = Article::create($data);
-
-        // ✅ Gửi thông báo tới tất cả subscriber
-        $this->sendNotificationToSubscribers($article);
 
         return response()->json([
             'success' => true,
