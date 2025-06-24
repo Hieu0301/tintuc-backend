@@ -80,8 +80,16 @@ class ArticleController extends Controller
     public function store(ArticaleRequest $request)
     {
         try {
+            // 🟨 In toàn bộ dữ liệu request gửi lên (chưa validate)
+            Log::info('📨 Tất cả dữ liệu nhận:', $request->all());
+
+            // 🟩 Validate dữ liệu
             $data = $request->validated();
 
+            // 🟦 In dữ liệu sau validate
+            Log::info('✅ Dữ liệu sau validate:', $data);
+
+            // 🟪 Nếu có file thumbnail thì upload lên Cloudinary
             if ($request->hasFile('thumbnail') && $request->file('thumbnail')->isValid()) {
                 $uploadedFileUrl = Cloudinary::upload(
                     $request->file('thumbnail')->getPathname()
@@ -90,19 +98,25 @@ class ArticleController extends Controller
                 $data['thumbnail'] = $uploadedFileUrl;
             }
 
-            // ✅ Trả dữ liệu về frontend để xem cho chắc
+            // 🟫 Tạo bài viết
+            $article = Article::create($data);
+
             return response()->json([
                 'success' => true,
-                'data' => $data,
-                'message' => 'DEBUG: Dữ liệu sau validate + cloudinary'
+                'data' => $article,
+                'message' => 'Add article successful'
             ]);
         } catch (Exception $e) {
+            Log::error('🔥 Lỗi khi đăng bài: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
     }
+
 
 
 
