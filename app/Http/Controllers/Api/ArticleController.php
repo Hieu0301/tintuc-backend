@@ -57,20 +57,21 @@ class ArticleController extends Controller
 
     public function store(ArticaleRequest $request)
     {
-        $data = $request->validated();
+        // $data = $request->validated();
 
-        if ($request->hasFile('thumbnail')) {
-            $uploadedFileUrl = Cloudinary::upload($request->file('thumbnail')->getRealPath())->getSecurePath();
-            $data['thumbnail'] = $uploadedFileUrl;
-        }
+        // if ($request->hasFile('thumbnail')) {
+        //     $uploadedFileUrl = Cloudinary::upload($request->file('thumbnail')->getRealPath())->getSecurePath();
+        //     $data['thumbnail'] = $uploadedFileUrl;
+        // }
 
-        $article = Article::create($data);
+        // $article = Article::create($data);
 
-        return response()->json([
-            'success' => true,
-            'data' => $article,
-            'message' => 'Add article successfull'
-        ]);
+        // return response()->json([
+        //     'success' => true,
+        //     'data' => $article,
+        //     'message' => 'Add article successfull'
+        // ]);
+        dd('Hàm store hoạt động');
     }
 
     /**
