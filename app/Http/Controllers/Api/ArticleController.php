@@ -55,13 +55,9 @@ class ArticleController extends Controller
     //     ]);
     // }
 
-    public function store(Request $request)
+    public function store(ArticaleRequest $request)
     {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'content' => 'required',
-            'thumbnail' => 'nullable|image|max:2048',
-        ]);
+        $data = $request->validated();
 
         if ($request->hasFile('thumbnail')) {
             $uploadedFileUrl = Cloudinary::upload($request->file('thumbnail')->getRealPath())->getSecurePath();
