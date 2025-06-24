@@ -90,6 +90,8 @@ class ArticleController extends Controller
                 $data['thumbnail'] = $uploadedFileUrl;
             }
 
+            // ✅ In thử dữ liệu
+            Log::info('📦 Dữ liệu gửi vào Article::create: ', $data);
 
             $article = Article::create($data);
 
@@ -100,14 +102,15 @@ class ArticleController extends Controller
             ]);
         } catch (Exception $e) {
             Log::error('🔥 Lỗi khi đăng bài: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
 
-            // ✅ Gửi lỗi về frontend để bạn thấy ngay trên console log của React
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage() // Thay vì giấu lỗi, show rõ ra luôn
+                'message' => $e->getMessage()
             ], 500);
         }
     }
+
 
 
 
