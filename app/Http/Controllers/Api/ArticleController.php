@@ -97,9 +97,11 @@ class ArticleController extends Controller
             ]);
         } catch (Exception $e) {
             Log::error('🔥 Lỗi khi đăng bài: ' . $e->getMessage());
+
+            // ✅ Gửi lỗi về frontend để bạn thấy ngay trên console log của React
             return response()->json([
                 'success' => false,
-                'message' => 'Server error: ' . $e->getMessage()
+                'message' => $e->getMessage() // Thay vì giấu lỗi, show rõ ra luôn
             ], 500);
         }
     }
