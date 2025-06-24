@@ -34,10 +34,10 @@ Route::get('/run-key', function () {
     return response()->json(['message' => 'APP_KEY generated!']);
 });
 
-Route::get('/run-migrate', function () {
-    Artisan::call('migrate', ['--force' => true]);
-    return response()->json(['message' => 'Migration done!']);
-});
+// Route::get('/run-migrate', function () {
+//     Artisan::call('migrate', ['--force' => true]);
+//     return response()->json(['message' => 'Migration done!']);
+// });
 
 
 Route::get('/ping', function () {
