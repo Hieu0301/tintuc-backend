@@ -90,8 +90,8 @@ class ArticleController extends Controller
                 $data['thumbnail'] = $uploadedFileUrl;
             }
 
-            // ✅ In thử dữ liệu
-            Log::info('📦 Dữ liệu gửi vào Article::create: ', $data);
+            // ✅ Dừng lại tại đây để xem rõ dữ liệu
+            dd($data);
 
             $article = Article::create($data);
 
@@ -101,15 +101,13 @@ class ArticleController extends Controller
                 'message' => 'Add article successful'
             ]);
         } catch (Exception $e) {
-            Log::error('🔥 Lỗi khi đăng bài: ' . $e->getMessage());
-            Log::error($e->getTraceAsString());
-
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
             ], 500);
         }
     }
+
 
 
 
