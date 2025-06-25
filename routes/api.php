@@ -7,7 +7,7 @@ use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Response;
+
 
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('articles', ArticleController::class);
@@ -51,14 +51,4 @@ Route::get('/clear-config', function () {
 
 Route::get('/ping', function () {
     return response()->json(['message' => 'pong']);
-});
-
-Route::get('/storage/images/{filename}', function ($filename) {
-    $path = storage_path('app/public/images/' . $filename);
-
-    if (!file_exists($path)) {
-        abort(404);
-    }
-
-    return Response::file($path);
 });
