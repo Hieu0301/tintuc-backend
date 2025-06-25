@@ -52,3 +52,13 @@ Route::get('/clear-config', function () {
 Route::get('/ping', function () {
     return response()->json(['message' => 'pong']);
 });
+
+Route::get('/storage/images/{filename}', function ($filename) {
+    $path = storage_path('app/public/images/' . $filename);
+
+    if (!file_exists($path)) {
+        abort(404);
+    }
+
+    return Response::file($path);
+});
