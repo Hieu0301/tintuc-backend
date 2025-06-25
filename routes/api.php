@@ -7,7 +7,7 @@ use App\Http\Controllers\UploadController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Artisan;
-
+use Illuminate\Support\Facades\Response;
 
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('articles', ArticleController::class);
