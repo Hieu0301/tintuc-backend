@@ -34,39 +34,21 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    // public function store(ArticaleRequest $request)
-    // {
-    //     $data = $request->validated();
-    //     if ($request->hasFile('thumbnail')) {
-    //         $file = $request->file('thumbnail');
-    //         $fileName = time() . '-' . $file->getClientOriginalName();
-
-    //         $path = $file->storeAs('images', $fileName, 'public');
-    //         $data['thumbnail'] = $path;
-    //     }
-
-    //     $article = Article::create($data);
-
-    //     // ✅ Gửi thông báo tới tất cả subscriber
-    //     $this->sendNotificationToSubscribers($article);
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'data' => $article,
-    //         'message' => 'Add article successfull'
-    //     ]);
-    // }
-
     public function store(ArticaleRequest $request)
     {
         $data = $request->validated();
-
         if ($request->hasFile('thumbnail')) {
-            $uploadedFileUrl = Cloudinary::upload($request->file('thumbnail')->getRealPath())->getSecurePath();
-            $data['thumbnail'] = $uploadedFileUrl;
+            $file = $request->file('thumbnail');
+            $fileName = time() . '-' . $file->getClientOriginalName();
+
+            $path = $file->storeAs('images', $fileName, 'public');
+            $data['thumbnail'] = $path;
         }
 
         $article = Article::create($data);
+
+        // ✅ Gửi thông báo tới tất cả subscriber
+        $this->sendNotificationToSubscribers($article);
 
         return response()->json([
             'success' => true,
@@ -74,6 +56,25 @@ class ArticleController extends Controller
             'message' => 'Add article successfull'
         ]);
     }
+
+
+    // public function store(ArticaleRequest $request)
+    // {
+    //     $data = $request->validated();
+
+    //     if ($request->hasFile('thumbnail')) {
+    //         $uploadedFileUrl = Cloudinary::upload($request->file('thumbnail')->getRealPath())->getSecurePath();
+    //         $data['thumbnail'] = $uploadedFileUrl;
+    //     }
+
+    //     $article = Article::create($data);
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $article,
+    //         'message' => 'Add article successfull'
+    //     ]);
+    // }
 
 
 
