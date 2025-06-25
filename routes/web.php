@@ -27,3 +27,12 @@ Route::get('/storage/images/{filename}', function ($filename) {
 
     return Response::file($path);
 });
+
+
+Route::get('/debug-file', function () {
+    $path = storage_path('app/public/images/1750829977-T1.PNG');
+    return [
+        'exists' => file_exists($path),
+        'real_path' => $path
+    ];
+});
